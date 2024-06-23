@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/Bienvenida">
+
+    <fragment
+        android:id="@+id/Bienvenida"
+        android:name="proyecto.llenadobasura.ui.Bienvenida"/>
+        <action
+            android:id="@+id/Bienvenida_to_InicioSesion"
+            app:destination="@id/InicioSession" />
+        <action
+            android:id="@+id/Bienvenida_to_RegistrarUsuario"
+            app:destination="@id/RegistrarUsuario" />
+
+    <fragment
+        android:id="@+id/InicioSession"
+        android:name="proyecto.llenadobasura.ui.InicioSesion"/>
+        <action
+            android:id="@+id/InicioSesion_to_log"
+            app:destination="@id/Mediciones" />
+
+
+    <fragment
+        android:id="@+id/RegistrarUsuario"
+        android:name="proyecto.llenadobasura.ui.RegistrarUsuario"/>
+
+
+    <fragment
+        android:id="@+id/Mediciones"
+        android:name="proyecto.llenadobasura.ui.Mediciones" />
+        <action
+            android:id="@+id/Mediciones_to_Bienvenida"
+            app:destination="@id/Bienvenida"
+            app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/Mediciones_to_UsuarioInfo"
+            app:destination="@id/UsuarioInfo" />
+
+    <fragment
+        android:id="@+id/UsuarioInfo"
+        android:name="proyecto.llenadobasura.ui.UsuarioInfo" />
+        <action
+            android:id="@+id/UsuarioInfo_to_Mediciones"
+            app:destination="@id/Mediciones" />
+        <action
+            android:id="@+id/UsuarioInfo_to_Bienvenida"
+            app:destination="@id/Bienvenida"
+            app:popUpToInclusive="false"/>
+
+
+
+
+
+</navigation>
