@@ -1,114 +1,130 @@
 package proyecto.llenadobasura.app
 
-import androidx.lifecycle.ViewModel
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.float
 import kotlinx.serialization.json.int
 import proyecto.llenadobasura.api.Api
 
-class UsuarioActivo(usuario: String, nombre: String, correo: String, dispositivo: String){
+class UsuarioActivo(usuario: String, nombre: String, correo: String, basureros: Array<String>){
 
-    private val API: Api = Api()
+    private val api: Api = Api()
 
-    private val Usuario: String = usuario.replace("\"", "")
-    private var Nombre: String = nombre.replace("\"", "")
-    private var Correo: String = correo.replace("\"", "")
-    private var Dispositivo = dispositivo.replace("\"", "")
-    private val Basurero: Basurero = Basurero()
+    private val Usuario: String = usuario
+    private var Nombre: String = nombre
+    private var Correo: String = correo
+    private val Dispositivos: ArrayList<String> = ArrayList(basureros.toList())
+    private val DispositivoActivo = Basurero("", 0, 0)
+
+    init {
+        try {
+            if (Dispositivos.isNotEmpty()){
+                DispositivoActivo.setNombre(Dispositivos[0])
+            }
+        }catch (e: NullPointerException){
+            println(Dispositivos)
+        }
+    }
 
     fun getUsuario(): String{
-        return this.Usuario
+        return Usuario
     }
 
     fun getNombre(): String{
-        return this.Nombre
+        return Nombre
     }
 
     fun getCorreo(): String{
-        return this.Correo
+        return Correo
     }
 
-    fun getDisp(): String{
-        return this.Dispositivo
+    fun getDispositivos(): ArrayList<String>{
+        return Dispositivos
     }
 
-    fun getCapacidadBasurero(): Int{
-        obtenerInfoDisp()
-        return this.Basurero.getCapacidad()
+    fun getDispositivoActivo(): Basurero{
+        cargarDatosDispositivoActivo()
+        return DispositivoActivo
     }
 
-    fun getAlturaBasura(): Int{
-        obtenerInfoDisp()
-        return this.Basurero.getAlturaBasura()
+    fun setNombre(nombre: String){
+        Nombre = nombre
+        subirDataUsuario()
     }
 
-    fun actualizarDispositivo(disp: String): Boolean{
-        if (disp == this.Dispositivo){
+    fun setCorreo(correo: String){
+        Correo = correo
+        subirDataUsuario()
+    }
+
+    fun setDispositivoActivo(nombre: String){
+        DispositivoActivo.setNombre(nombre)
+    }
+
+    private fun checkNombre(nombre: String): Boolean {
+        if (nombre.isEmpty()) {
             return false
         }
-        val usr = JsonObject(mapOf("usuario" to JsonPrimitive(Usuario), "nombre" to JsonPrimitive(Nombre), "correo" to JsonPrimitive(Correo), "dispositivo" to JsonPrimitive (disp)))
-        API.update_usuario(usr)
-        this.Dispositivo = disp
+        if (nombre.length > 30) {
+            throw Exception("El nombre no puede tener más de 30 caracteres.")
+        }
         return true
     }
 
-    fun actualizarUsuario(nombre: String, correo: String){
-        if (nombre == this.Nombre || correo == this.Correo){
-            throw Exception("El valor del nombre y correo no pueden ser iguales a los actuales")
+    private fun checkCorreo(correo: String): Boolean {
+        if (correo.isEmpty()) {
+            return false
         }
-        if (nombre.replace(" ", "") == "" && correo.replace(" ", "") == ""){
-            throw Exception("El valor del nombre y correo no pueden ser vacios")
+        if (!correo.contains("@") || !correo.contains(".")) {
+            throw Exception("Correo inválido.")
         }
-        if (nombre.length > 50 && correo.length > 50){
-            throw Exception("El valor del nombre y correo no pueden ser mayores a 50 caracteres")
-        }
-        if (nombre != this.Nombre && nombre.replace(" ", "") != ""){
-            this.Nombre = nombre
-        }
-        if (correo != this.Correo && correo.replace(" ", "") != ""){
-            this.Correo = correo
-        }
-        val usr = JsonObject(mapOf("usuario" to JsonPrimitive(Usuario), "nombre" to JsonPrimitive(Nombre), "correo" to JsonPrimitive(Correo), "dispositivo" to JsonPrimitive (Dispositivo)))
-        API.update_usuario(usr)
+        return true
     }
 
-    fun actualizarCapacidadBasurero(capacidad: Int){
-        if (capacidad >= 1000){
-            throw Exception("El valor de la capacidad no puede ser mayor a 1000 cm")
-        }
-        if (capacidad == this.Basurero.getCapacidad()){
-            throw Exception("El valor de la capacidad no puede ser igual al actual")
-        }
-        val usr = JsonObject(mapOf("dispositivo" to JsonPrimitive(this.Dispositivo), "capacidad" to JsonPrimitive(capacidad)))
-        API.update_dispositivo(usr)
-        this.Basurero.setCapacidad(capacidad)
+    fun actualizarDatosUsuario(nombre: String, correo: String){
+        if (nombre.isEmpty() && correo.isEmpty())
+            throw Exception("No se ha ingresado ningún dato.")
+        if (nombre != this.Nombre && checkNombre(nombre))
+            setNombre(nombre)
+        if (correo != this.Correo && checkCorreo(correo))
+            setCorreo(correo)
     }
 
-    fun obtenerPorcentajeLlenado(): Int{
-        obtenerInfoDisp()
-        try {
-            return this.Basurero.getPorcentajeLlenado()
-        } catch (e: ArithmeticException){
-            return 0
+    fun subirDataUsuario(){
+        val json = JsonObject(
+            mapOf("usuario" to JsonPrimitive(this.Usuario),
+                "nombre" to JsonPrimitive(this.Nombre),
+                "correo" to JsonPrimitive(this.Correo),
+                "dispositivos" to JsonArray(this.Dispositivos.map { JsonPrimitive(it) })))
+        println(json["dispositivos"])
+        return api.update_usuario(json)
+    }
+
+    fun cargarDatosDispositivoActivo(){
+        val json = api.get_ultimo_dato_disp(this.DispositivoActivo.getNombre())
+        DispositivoActivo.setCapacidad((json["capacidad"] as JsonPrimitive).int)
+        DispositivoActivo.setLlenado((json["distancia"] as JsonPrimitive).int)
+    }
+
+    fun agregarDispositivo(nombre: String){
+        Dispositivos.add(nombre)
+        subirDataUsuario()
+    }
+
+    fun eliminarDispositivo(nombre: String){
+        Dispositivos.remove(nombre)
+        subirDataUsuario()
+        if (Dispositivos.isEmpty()){
+            DispositivoActivo.setNombre("")
+            DispositivoActivo.setCapacidad(0)
+            DispositivoActivo.setLlenado(0)
+            return
+        }
+        if (nombre == DispositivoActivo.getNombre()){
+            DispositivoActivo.setNombre(Dispositivos[0])
         }
     }
 
-    fun obtenerNombresDispositivos(): List<String> {
-        val dispositivos = API.get_disp_disponibles()["respuesta"] as JsonArray
-        val nombresDispositivos = dispositivos.map { (it as JsonPrimitive).content }
-        return nombresDispositivos
-    }
-
-    fun obtenerInfoDisp(){
-        val info_disp = API.get_disp_info(Dispositivo)["respuesta"] as JsonObject
-        val ultimo_dato = API.get_ultimo_dato_disp(Dispositivo)["respuesta"] as JsonObject
-        val capacidad= (info_disp["capacidad"] as JsonPrimitive).int
-        val distancia_basura = (ultimo_dato["distancia"] as JsonPrimitive).float.toInt()
-        Basurero.setCapacidad(capacidad)
-        Basurero.setAlturaBasura(capacidad - distancia_basura)
-    }
 
 }
 

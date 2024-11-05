@@ -26,18 +26,38 @@
     <fragment
         android:id="@+id/RegistrarUsuario"
         android:name="proyecto.llenadobasura.ui.RegistrarUsuario"/>
+        <action
+            android:id="@+id/RegistrarUsuario_to_log"
+            app:destination="@id/Mediciones" />
 
 
     <fragment
         android:id="@+id/Mediciones"
         android:name="proyecto.llenadobasura.ui.Mediciones" />
         <action
-            android:id="@+id/Mediciones_to_Bienvenida"
-            app:destination="@id/Bienvenida"
-            app:popUpToInclusive="false"/>
+            android:id="@+id/Mediciones_to_dispositivos"
+            app:destination="@id/dispositivos" />
         <action
             android:id="@+id/Mediciones_to_UsuarioInfo"
             app:destination="@id/UsuarioInfo" />
+        <action
+            android:id="@+id/Mediciones_to_Bienvenida"
+            app:destination="@id/Bienvenida"
+            app:popUpToInclusive="false"/>
+
+    <fragment
+        android:id="@+id/dispositivos"
+        android:name="proyecto.llenadobasura.ui.dispositivos" />
+        <action
+            android:id="@+id/dispositivos_to_Mediciones"
+            app:destination="@id/Mediciones" />
+        <action
+            android:id="@+id/dispositivos_to_UsuarioInfo"
+            app:destination="@id/UsuarioInfo" />
+        <action
+            android:id="@+id/dispositivos_to_Bienvenida"
+            app:destination="@id/Bienvenida"
+            app:popUpToInclusive="false"/>
 
     <fragment
         android:id="@+id/UsuarioInfo"
@@ -45,6 +65,9 @@
         <action
             android:id="@+id/UsuarioInfo_to_Mediciones"
             app:destination="@id/Mediciones" />
+        <action
+            android:id="@+id/UsuarioInfo_to_dispositivos"
+            app:destination="@id/dispositivos" />
         <action
             android:id="@+id/UsuarioInfo_to_Bienvenida"
             app:destination="@id/Bienvenida"

@@ -75,13 +75,10 @@ class SessionManager(){
         }
         val jsonUsuario = JsonObject(mapOf("usuario" to JsonPrimitive(usuario), "contraseña" to JsonPrimitive(contraseña)))
         val respuesta = api.log_usuario(jsonUsuario)
-        if (respuesta["respuesta"] !is JsonObject){
-            throw Exception("Usuario y/o contraseña incorrectos.")
-        }
-        return respuesta["respuesta"] as JsonObject
+        return respuesta
     }
 
-    fun RegistrarUsuario(usuario: String, nombre: String, contraseña: String, confcontraseña: String, correo: String): String {
+    fun RegistrarUsuario(usuario: String, nombre: String, correo: String, contraseña: String, confcontraseña: String): String {
         if (!checkUsuario(usuario) || !checkNombre(nombre) || !checkContraseñas(contraseña, confcontraseña) || !checkCorreo(correo)) {
             throw Exception("Rellene todos los campos.")
         }
@@ -90,7 +87,6 @@ class SessionManager(){
             "nombre" to JsonPrimitive(nombre),
             "contraseña" to JsonPrimitive(contraseña),
             "correo" to JsonPrimitive(correo)))
-        val respuesta = api.add_usuario(jsonUsuarioNuevo)
-        return respuesta["respuesta"].toString().replace("\"", "")
+        return api.add_usuario(jsonUsuarioNuevo)
     }
 }

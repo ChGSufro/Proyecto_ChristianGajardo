@@ -9,12 +9,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import proyecto.llenadobasura.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import proyecto.llenadobasura.app.Universidad
 
 import proyecto.llenadobasura.app.SessionManager as SM
 
@@ -26,6 +28,7 @@ class RegistrarUsuario : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.sample_registrar_usuario, container, false)
+        val universidad = ViewModelProvider(requireActivity())[Universidad::class.java]
 
         val usuario: EditText = view.findViewById(R.id.Usuario)
         val nombre: EditText = view.findViewById(R.id.Nombre)
@@ -38,20 +41,14 @@ class RegistrarUsuario : Fragment() {
         view.findViewById<Button>(R.id.BotonRegistrar).setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch() {
                 try {
-                    val response = SM().RegistrarUsuario(
+                    universidad.regUsuario(
                         usuario.text.toString(),
                         nombre.text.toString(),
+                        correo.text.toString(),
                         contraseña.text.toString(),
-                        confcontraseña.text.toString(),
-                        correo.text.toString())
+                        confcontraseña.text.toString())
+                    findNavController().navigate(R.id.RegistrarUsuario_to_log)
 
-                    withContext(Dispatchers.Main){
-                        alerta?.text = response
-                        if (response == "Usuario agregado."){
-                            findNavController().popBackStack()
-                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
-                        }
-                    }
 
                 } catch (error: Exception) {
                     withContext(Dispatchers.Main){

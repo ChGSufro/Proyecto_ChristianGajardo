@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/purple_500"
+        android:popupBackground="@color/purple_500"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.github.mikephil.charting.charts.BarChart
@@ -37,11 +38,12 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/etiqueta_altura_basura"
-        android:layout_width="250dp"
+        android:id="@+id/etiqueta_basurero"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Altura de basura (cm): "
+        android:textAlignment="center"
+        android:text="Basurero: "
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -57,7 +59,21 @@
         android:textSize="20dp"
         android:textColor="@color/black"
         android:background="@color/purple_500"
-        app:layout_constraintTop_toBottomOf="@id/etiqueta_altura_basura"
+        android:popupBackground="@color/purple_500"
+        app:layout_constraintTop_toBottomOf="@id/etiqueta_basurero"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/etiqueta_altura_basura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Altura de basura (cm): "
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/dispositivos"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
@@ -67,39 +83,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginStart="60dp"
         android:text="Capacidad (cm): "
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/dispositivos"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <EditText
-        android:id="@+id/campo_capacidad_basurero"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:inputType="number"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/grey"
-        android:hint=" --- "
-        app:layout_constraintTop_toBottomOf="@id/dispositivos"
-        app:layout_constraintLeft_toRightOf="@id/etiqueta_capacidad_basurero"/>
-
-    <Button
-        android:id="@+id/boton_guardar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Guardar"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/campo_capacidad_basurero"
+        app:layout_constraintTop_toBottomOf="@id/etiqueta_altura_basura"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
 
 
 

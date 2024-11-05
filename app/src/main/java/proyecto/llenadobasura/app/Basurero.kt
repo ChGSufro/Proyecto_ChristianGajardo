@@ -1,40 +1,45 @@
 package proyecto.llenadobasura.app
 
-class Basurero {
+class Basurero(nombre: String, capacidad: Int, llenado: Int) {
 
-    private var capacidad: Int = 0
-    private var altura_basura: Int = 0
+    private var Nombre: String = nombre
+    private var Capacidad: Int = capacidad
+    private var Llenado: Int = llenado
 
-    fun setCapacidad(capacidad: Int){
-        this.capacidad = capacidad
-    }
 
-    fun setAlturaBasura(altura_basura: Int){
-        if (altura_basura < 0){
-            this.altura_basura = 0
-            return
-        }
-        this.altura_basura = altura_basura
+    fun getNombre(): String{
+        return this.Nombre
     }
 
     fun getCapacidad(): Int{
-        return this.capacidad
+        return this.Capacidad
     }
 
-    fun getAlturaBasura(): Int{
-        return this.altura_basura
+    fun getLlenado(): Int{
+        return this.Llenado
     }
 
-    fun getPorcentajeLlenado(): Int{
-        val porcentaje: Int = (this.altura_basura * 100 / this.capacidad)
-        if (porcentaje > 100){
-            return 100
+    fun setNombre(nombre: String){
+        this.Nombre = nombre
+    }
+
+    fun setCapacidad(capacidad: Int){
+        this.Capacidad = capacidad
+    }
+
+    fun setLlenado(distancia: Int){
+        val llenado = this.Capacidad - distancia
+        if (llenado < 0){
+            this.Llenado = 0
+            return
         }
-        if (porcentaje < 0){
-            return 0
-        }
-        return porcentaje
-
+        this.Llenado = llenado
     }
+
+
+    fun porcentajeLlenado(): Int{
+        return (this.Llenado * 100) / this.Capacidad
+    }
+
 
 }
